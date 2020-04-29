@@ -9,7 +9,7 @@ class SampleComponent extends Component {
   render() {
     const { data } = this.props;
 
-    return <div className="">Data from Redux: {data}</div>;
+    return <div className="">Data from Redu: {data}</div>;
   }
 }
 
