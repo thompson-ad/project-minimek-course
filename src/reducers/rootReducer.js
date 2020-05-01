@@ -1,5 +1,7 @@
 import { combineReducers } from "redux";
+import tabsReducer from "features/tabs/tabsReducer";
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({ tabs: tabsReducer });
 
+console.log(rootReducer);
 export default rootReducer;
