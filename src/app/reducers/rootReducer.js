@@ -1,13 +1,17 @@
 import { combineReducers } from "redux";
+
 import entitiesReducer from "./entitiesReducer";
-import tabsReducer from "features/tabs/tabsReducer";
+import pilotsReducer from "features/pilots/pilotsReducer";
+import mechsReducer from "features/mechs/mechsReducer";
+import tabReducer from "features/tabs/tabsReducer";
 import unitInfoReducer from "features/unitInfo/unitInfoReducer";
 
 const rootReducer = combineReducers({
   entities: entitiesReducer,
+  pilots: pilotsReducer,
+  mechs: mechsReducer,
   unitInfo: unitInfoReducer,
-  tabs: tabsReducer,
+  tabs: tabReducer,
 });
 
-console.log(rootReducer);
 export default rootReducer;

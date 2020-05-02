@@ -1,3 +1,5 @@
+import { createSelector } from "reselect";
+
 const WEIGHT_CLASSES = [
   { name: "Light", weights: [20, 25, 30, 35] },
   { name: "Medium", weights: [40, 45, 50, 55] },
@@ -11,3 +13,10 @@ export function getWeightClass(weight) {
   ) || { name: "Unknown" };
   return weightClass.name;
 }
+
+const selectMechs = (state) => state.mechs;
+
+export const selectCurrentMech = createSelector(
+  selectMechs,
+  (mechs) => mechs.currentMech
+);
