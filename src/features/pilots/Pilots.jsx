@@ -1,87 +1,56 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import orm from "app/orm";
+import { Grid, Segment, Header } from "semantic-ui-react";
+import PilotsList from "./pilotsList/PilotsList";
+import PilotDetails from "./PilotDetails";
 
-import {
-  Grid,
-  Table,
-  Segment,
-  Header,
-  Form,
-  Dropdown,
-} from "semantic-ui-react";
+const mapState = (state) => {
+  // create a redux-orm session from our entities "slice" which contains the "tables" for each of our models types
+  const session = orm.session(state.entities);
 
-const RANKS = [
-  { value: "Private", text: "Private" },
-  { value: "Corporal", text: "Corporal" },
-  { value: "Sergeant", text: "Sergeant" },
-  { value: "Lieutenant", text: "Lieutenant" },
-  { value: "Captain", text: "Captain" },
-  { value: "Major", text: "Major" },
-  { value: "Colonel", text: "Colonel" },
-];
+  // Retrieve the model class that we need.  Each Session
+  // specifically "binds" model classes to itself, so that
+  // updates to model instances are applied to that session.
+  // These "bound classes" are available as fields in the session.
+  const { Pilot } = session;
 
-const MECHS = [{ value: "WHM-6R", text: "Warhammer WHM-6R" }];
+  // Query the session for all Pilot instances.
+  // The QuerySet that is returned from all() can be used to
+  // retrieve instances of the Pilot class, or retrieve the
+  // plain JS objects that are actually in the store.
+  // The toRefArray() method will give us an array of the
+  // plain JS objects for each item in the QuerySet.
+  const pilots = Pilot.all().toRefArray();
 
-const Pilots = () => {
-  return (
-    <Segment>
-      <Grid>
-        <Grid.Column width={10}>
-          <Header as="h3">Pilot List</Header>
-          <Table celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell width={5}>Name</Table.HeaderCell>
-                <Table.HeaderCell width={3}>Rank</Table.HeaderCell>
-                <Table.HeaderCell width={2}>Age</Table.HeaderCell>
-                <Table.HeaderCell width={2}>Skills</Table.HeaderCell>
-                <Table.HeaderCell width={4}>Mech</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>Natasha Kerensky</Table.Cell>
-                <Table.Cell>Colonel</Table.Cell>
-                <Table.Cell>34</Table.Cell>
-                <Table.Cell>2/3</Table.Cell>
-                <Table.Cell>WHM-6R</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
-        </Grid.Column>
-        <Grid.Column width={6}>
-          <Header as="h3">Pilot Details</Header>
-          <Segment>
-            <Form size="large">
-              <Form.Field name="name" width={16}>
-                <label>Name</label>
-                <input placeholder="Name" value="Natasha Kerensky" />
-              </Form.Field>
-              <Form.Field name="rank" width={16}>
-                <label>Rank</label>
-                <Dropdown fluid selection options={RANKS} value="Colonel" />
-              </Form.Field>
-              <Form.Field name="age" width={6}>
-                <label>Age</label>
-                <input placeholder="Age" value="34" />
-              </Form.Field>
-              <Form.Field name="gunnery" width={6}>
-                <label>Gunnery</label>
-                <input value="2" />
-              </Form.Field>
-              <Form.Field name="piloting" width={6}>
-                <label>Piloting</label>
-                <input value="3" />
-              </Form.Field>
-              <Form.Field name="mech" width={16}>
-                <label>Mech</label>
-                <Dropdown fluid selection options={MECHS} value="WHM-6R" />
-              </Form.Field>
-            </Form>
-          </Segment>
-        </Grid.Column>
-      </Grid>
-    </Segment>
-  );
+  // Now that we have an array of all pilot objects, return it as a prop
+  return { pilots };
 };
 
-export default Pilots;
+export class Pilots extends Component {
+  render() {
+    const { pilots = [] } = this.props;
+
+    // Use the first pilot as the "current" one for display, if available.
+    const currentPilot = pilots[0] || {};
+
+    return (
+      <Segment>
+        <Grid>
+          <Grid.Column width={10}>
+            <Header as="h3">Pilot List</Header>
+            <PilotsList pilots={pilots} />
+          </Grid.Column>
+          <Grid.Column width={6}>
+            <Header as="h3">Pilot Details</Header>
+            <Segment>
+              <PilotDetails pilot={currentPilot} />
+            </Segment>
+          </Grid.Column>
+        </Grid>
+      </Segment>
+    );
+  }
+}
+
+export default connect(mapState)(Pilots);

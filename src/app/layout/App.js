@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Header, Container } from "semantic-ui-react";
 
 import "./App.css";
-
+import Tools from "features/tools/Tools";
 import TabBar from "features/tabs/TabBar";
 import UnitInfo from "features/unitInfo/UnitInfo";
 import Pilots from "features/pilots/Pilots";
@@ -20,6 +20,7 @@ class App extends Component {
         label: "Unit Organization",
         component: UnitOrganization,
       },
+      { name: "tools", label: "Tools", component: Tools },
     ];
 
     return (
