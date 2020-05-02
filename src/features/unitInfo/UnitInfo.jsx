@@ -1,42 +1,39 @@
-import React, { Component } from "react";
-import { Header, Container } from "semantic-ui-react";
+import React from "react";
+import { connect } from "react-redux";
+import { Form, Dropdown, Segment } from "semantic-ui-react";
 
-import "app/layout/App.css";
+import { selectUnitInfo } from "./unitInfoSelectors";
 
-import TabBarContainer from "features/tabs/TabBar";
-import UnitInfo from "features/unitInfo/UnitInfo";
-import Pilots from "features/pilots/Pilots";
-import Mechs from "features/mechs/Mechs";
-import UnitOrganization from "features/unitOrganization/UnitOrganization";
-import Tools from "features/tools/Tools";
+const FACTIONS = [
+  { value: "cc", text: "Capellan Confederation" },
+  { value: "dc", text: "Draconis Combine" },
+  { value: "fs", text: "Federated Suns" },
+  { value: "fwl", text: "Free Worlds League" },
+  { value: "lc", text: "Lyran Commonwealth" },
+  { value: "wd", text: "Wolf's Dragoons" },
+];
 
-class App extends Component {
-  render() {
-    const tabs = [
-      { name: "unitInfo", label: "Unit Info", component: UnitInfo },
-      { name: "pilots", label: "Pilots", component: Pilots },
-      { name: "mechs", label: "Mechs", component: Mechs },
-      {
-        name: "unitOrganization",
-        label: "Unit Organization",
-        component: UnitOrganization,
-      },
-      { name: "tools", label: "Tools", component: Tools },
-    ];
+const mapState = (state) => ({
+  unitInfo: selectUnitInfo(state),
+});
 
-    return (
-      <div className="App">
-        <div className="App-header">
-          <Header inverted as="h1">
-            Project Mini-Mek
-          </Header>
-        </div>
-        <Container>
-          <TabBarContainer tabs={tabs} size="massive" />
-        </Container>
-      </div>
-    );
-  }
-}
+const UnitInfo = ({ unitInfo = {} }) => {
+  const { name, affiliation } = unitInfo;
 
-export default App;
+  return (
+    <Segment attached="bottom">
+      <Form size="large">
+        <Form.Field name="name" width={6}>
+          <label>Unit Name</label>
+          <input placeholder="Name" value={name} />
+        </Form.Field>
+        <Form.Field name="affiliation" width={6}>
+          <label>Affiliation</label>
+          <Dropdown selection options={FACTIONS} value={affiliation} />
+        </Form.Field>
+      </Form>
+    </Segment>
+  );
+};
+
+export default connect(mapState)(UnitInfo);
